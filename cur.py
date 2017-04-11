@@ -3,21 +3,25 @@
 import argparse
 import requests
 
-def get_currency_rates(source_currency, target_currency):
+def get_currency_rate(currency):
    
-   if source_currency.upper() == 'PLN': 
-      source_rate = 1
-   else:
-      source_url = 'http://api.nbp.pl/api/exchangerates/rates/a/{}/?format=json'.format(source_currency.upper())
-      source_rate = requests.get(source_url).json()['rates'][0]['mid']
-   
-   if target_currency.upper() == 'PLN':
-      target_rate = 1
-   else:
-      target_url = 'http://api.nbp.pl/api/exchangerates/rates/a/{}/?format=json'.format(target_currency.upper())
-      target_rate = requests.get(target_url).json()['rates'][0]['mid'] 
+   url = 'http://api.nbp.pl/api/exchangerates/rates/a/{}/?format=json'.format(currency.upper())
+   response = requests.get(url)
 
-   return source_rate, target_rate
+   if response.status_code == 200:
+      currency_rate = response.json()['rates'][0]['mid']
+      return currency_rate
+   else:
+      print("An error occured while fetching currency rates!")
+
+def parse_currency_rate(currency):
+   
+   if currency.upper() == 'PLN': 
+      currency_rate = 1
+   else:
+      currency_rate = get_currency_rate(currency)
+
+   return currency_rate
 
 if __name__ == "__main__":
 
@@ -30,7 +34,9 @@ if __name__ == "__main__":
 
    args = parser.parse_args()
 
-   source_value, target_value = get_currency_rates(args.source_currency, args.target_currency)
+   source_value = parse_currency_rate(args.source_currency)
+   target_value = parse_currency_rate(args.target_currency)
+   
    result = round(args.amount * source_value / target_value, 2) 
 
    if args.verbose:
