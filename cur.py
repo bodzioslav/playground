@@ -6,16 +6,19 @@ import requests
 def get_currency_rate(currency):
    
     url = 'http://api.nbp.pl/api/exchangerates/rates/a/{}/?format=json'.format(currency.upper())
-    response = requests.get(url)
-
+    
     try:
-        if response.status_code == 200:
-            currency_rate = response.json()['rates'][0]['mid']
-            return currency_rate
-        else:
-            exit("An error occured while fetching currency rates!")
-    except:
-        exit("Error while trying to fetch the data")
+        response = requests.get(url)
+    except requests.exceptions.ConnectionError:
+        exit("ConnectionError")
+    except requests.exceptions.Timeout:
+        exit("Timeout")
+
+    if response.status_code == 200:
+        currency_rate = response.json()['rates'][0]['mid']
+        return currency_rate
+    else:
+        exit("An error occured while fetching currency rates!")
 
 def parse_currency_rate(currency):
    
