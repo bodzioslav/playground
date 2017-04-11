@@ -12,7 +12,7 @@ def get_currency_rate(currency):
       currency_rate = response.json()['rates'][0]['mid']
       return currency_rate
    else:
-      print("An error occured while fetching currency rates!")
+      exit("An error occured while fetching currency rates!")
 
 def parse_currency_rate(currency):
    
