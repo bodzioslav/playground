@@ -29,6 +29,15 @@ def parse_currency_rate(currency):
 
     return currency_rate
 
+def return_result(amount, source_currency, target_currency):
+    
+    source_value = parse_currency_rate(source_currency)
+    target_value = parse_currency_rate(target_currency)
+
+    result = round(args.amount * source_value / target_value, 2)
+    
+    return result 
+
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
@@ -40,12 +49,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    source_value = parse_currency_rate(args.source_currency)
-    target_value = parse_currency_rate(args.target_currency)
-   
-    result = round(args.amount * source_value / target_value, 2) 
-
     if args.verbose:
         print('Converted from {} to {}:'.format(args.source_currency, args.target_currency), result)
     else:
-        print(result)
+        print(return_result(args.amount, args.source_currency, args.target_currency))
